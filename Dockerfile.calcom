@@ -1,0 +1,15 @@
+FROM calcom/cal.com:latest
+
+ENV NEXTAUTH_URL=https://rdv.alexis-rodrigues.fr
+ENV NEXT_PUBLIC_WEBAPP_URL=https://rdv.alexis-rodrigues.fr
+ENV BUILT_NEXT_PUBLIC_WEBAPP_URL=https://rdv.alexis-rodrigues.fr
+
+RUN find /calcom/apps/web/.next/ ! -name '*.map' -type f 2>/dev/null | \
+    xargs grep -l 'localhost:3000' 2>/dev/null | \
+    grep -v 'node_modules/next' | \
+    while read f; do \
+      sed -i \
+        -e 's|http://localhost:3000|https://rdv.alexis-rodrigues.fr|g' \
+        -e 's|"localhost:3000"|"rdv.alexis-rodrigues.fr"|g' \
+        "$f"; \
+    done
